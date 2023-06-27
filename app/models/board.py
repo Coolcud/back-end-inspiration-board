@@ -2,13 +2,13 @@ from app import db
 
 
 class Board(db.Model):
+    # Columns
     board_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String)
     owner = db.Column(db.String)
 
-    # TODO: Decide if this needs to be added? Would need to do flask db migrate, then upgrade again
-    # TODO: Would need to add foreign key in card.py, and relationship to board
-    # cards = db.relationship("Card", back_populates="board")
+    # Relationship
+    cards = db.relationship("Card", back_populates="board")
 
     def to_dict(self):
         board_dict = {
