@@ -125,3 +125,16 @@ def increment_likes(card_id):
 
     db.session.commit()
     return jsonify(card.to_dict()), 200
+
+
+cards_bp.route("/<card_id>", methods=["DELETE"])
+def delete_card(card_id):
+
+    card = validate_model_item(Card, card_id)
+
+    db.session.delete(card)
+    db.session.commit()
+
+    return jsonify({"message": f"Card {card_id} has been successfully deleted!"})
+
+    
