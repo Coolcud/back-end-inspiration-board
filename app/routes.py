@@ -118,6 +118,18 @@ def get_all_cards_of_board(board_id):
 # --------------------------CARD ROUTES--------------------------
 cards_bp = Blueprint("cards_bp", __name__, url_prefix="/cards")
 
+
+@cards_bp.route("", methods=["POST"])
+def create_card():
+    request_body = request.get_json()
+
+    new_card = Card.from_dict(request_body)
+
+    db.session.add(new_card)
+    db.session.commit()
+
+    return {"card": new_card.to_dict()}, 201
+
 @cards_bp.route("/<card_id>/like", methods=["PUT"])
 def increment_likes(card_id):
     card = validate_model_item(Card, card_id)
