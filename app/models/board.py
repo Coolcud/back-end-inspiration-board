@@ -1,6 +1,5 @@
 from app import db
 
-
 class Board(db.Model):
     # Columns
     board_id = db.Column(db.Integer, primary_key=True, autoincrement=True)

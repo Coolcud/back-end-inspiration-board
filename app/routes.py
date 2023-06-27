@@ -54,17 +54,18 @@ DELETE URL/cards/<card_id>
 
 liking a card:
 OPTIONS URL/cards/<card_id>/like # maybe a CORS thing?
-PUT URL"url/cards/<card_id>/like"
+PUT URL/cards/<card_id>/like
 """
+
+# BLUEPRINTS
+# example_bp = Blueprint('example_bp', __name__)
+boards_bp = Blueprint("boards_bp", __name__, url_prefix="/boards")
+cards_bp = Blueprint("cards_bp", __name__, url_prefix="/cards")
 
 # --------------------------BOARD ROUTES--------------------------
 
-# example_bp = Blueprint('example_bp', __name__)
-boards_bp = Blueprint("boards_bp", __name__, url_prefix="/boards")
-
-
 def validate_model_item(model, item_id):
-    """Validate that model item exists in database."""
+    """Validate model item exists in database."""
     try:
         item_id = int(item_id)
     except:
@@ -111,15 +112,15 @@ def get_all_cards_of_board(board_id):
     # Create list of board dictionaries based on db data
     response = [card.to_dict() for card in board.cards]
 
-    # TODO: Determine if jsonify is needed
     return jsonify(response), 200
 
 
+# TODO: Add POST route for adding card to board
 # --------------------------CARD ROUTES--------------------------
-cards_bp = Blueprint("cards_bp", __name__, url_prefix="/cards")
 
 @cards_bp.route("/<card_id>/like", methods=["PUT"])
 def increment_likes(card_id):
+    """Increase card's like count by 1."""
     card = validate_model_item(Card, card_id)
     card.likes_count += 1
 
@@ -129,12 +130,10 @@ def increment_likes(card_id):
 
 cards_bp.route("/<card_id>", methods=["DELETE"])
 def delete_card(card_id):
-
+    """Delete card via card_id."""
     card = validate_model_item(Card, card_id)
 
     db.session.delete(card)
     db.session.commit()
 
-    return jsonify({"message": f"Card {card_id} has been successfully deleted!"})
-
-    
+    return jsonify({"message": f"Card {card_id} has been successfully deleted!"}), 200
