@@ -127,7 +127,7 @@ def increment_likes(card_id):
     return jsonify(card.to_dict()), 200
 
 
-cards_bp.route("/<card_id>", methods=["DELETE"])
+@cards_bp.route("/<card_id>", methods=["DELETE"])
 def delete_card(card_id):
 
     card = validate_model_item(Card, card_id)
