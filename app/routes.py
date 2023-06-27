@@ -1,6 +1,8 @@
 from flask import Blueprint, request, jsonify, make_response, abort
-from app.models.board import Board
 from app import db
+from app.models.board import Board
+from app.models.card import Card
+
 
 """
 boards demo URL: https://backend-inspiration-board.onrender.com
@@ -52,7 +54,7 @@ DELETE URL/cards/<card_id>
 
 liking a card:
 OPTIONS URL/cards/<card_id>/like # maybe a CORS thing?
-PUT URL/cards/<card_id>/like
+PUT URL"url/cards/<card_id>/like"
 """
 
 # --------------------------BOARD ROUTES--------------------------
@@ -114,3 +116,12 @@ def get_all_cards_of_board(board_id):
 
 
 # --------------------------CARD ROUTES--------------------------
+cards_bp = Blueprint("cards_bp", __name__, url_prefix="/cards")
+
+@cards_bp.route("/<card_id>/like", methods=["PUT"])
+def increment_likes(card_id):
+    card = validate_model_item(Card, card_id)
+    card.likes_count += 1
+
+    db.session.commit()
+    return jsonify(card.to_dict()), 200
