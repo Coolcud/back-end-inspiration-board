@@ -81,8 +81,6 @@ def increment_likes(card_id):
     """Increase card's like count by 1."""
     card = validate_model_item(Card, card_id)
 
-    if card.likes_count is None:
-        card.likes_count = 0
     card.likes_count += 1
 
     db.session.commit()
