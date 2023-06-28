@@ -7,8 +7,6 @@ from app.models.card import Card
 boards_bp = Blueprint("boards_bp", __name__, url_prefix="/boards")
 cards_bp = Blueprint("cards_bp", __name__, url_prefix="/cards")
 
-# --------------------------BOARD ROUTES--------------------------
-
 def validate_model_item(model, item_id):
     """Validate model item exists in database."""
     try:
@@ -22,6 +20,8 @@ def validate_model_item(model, item_id):
 
     return item
 
+
+# --------------------------BOARD ROUTES--------------------------
 
 @boards_bp.route("", methods=["GET"])
 def get_all_boards():
