@@ -4,62 +4,8 @@ from app.models.board import Board
 from app.models.card import Card
 
 
-"""
-boards demo URL: https://backend-inspiration-board.onrender.com
-
-ENDPOINTS --- Boards
-
-loading the website lists all boards:
-GET URL/boards
-
-creating a new board:
-OPTIONS URL/boards # maybe a CORS thing?
-POST URL/boards
-	Request body =
-    {
-		"owner": "Coolcud",
-        "title": "Testing"
-	}
-
-----------------------------------------------------------
-
-ENDPOINTS --- Boards and Cards
-
-clicking on a board loads all cards for that board:
-GET URL/boards/<board_id>/cards
-
-adding a new card:
-OPTIONS URL/boards/<board_id>/cards # maybe a CORS thing?
-POST URL/boards/<board_id>/cards
-	Request body =
-    {
-		"message": "Test 1"
-	}
-
-delete all boards and cards:
-OPTIONS URL/destroy_all # maybe a CORS thing?
-DELETE URL/destroy_all
-
-----------------------------------------------------------
-
-ENDPOINTS --- Cards
-
-deleting a card:
-OPTIONS URL/cards/<card_id> # maybe a CORS thing?
-DELETE URL/cards/<card_id>
-	returns:
-	{
-        "details": "Card 156 \"postman test\" successfully deleted"
-	}
-
-liking a card:
-OPTIONS URL/cards/<card_id>/like # maybe a CORS thing?
-PUT URL/cards/<card_id>/like
-"""
-
 boards_bp = Blueprint("boards_bp", __name__, url_prefix="/boards")
 cards_bp = Blueprint("cards_bp", __name__, url_prefix="/cards")
-
 
 # --------------------------BOARD ROUTES--------------------------
 
@@ -82,7 +28,6 @@ def get_all_boards():
     """Retrieve all boards from database."""
     all_boards = Board.query.all()
 
-    # Create list of board dictionaries based on db data
     response = [board.to_dict() for board in all_boards]
 
     return jsonify(response), 200
@@ -135,6 +80,7 @@ def create_card(board_id):
 def increment_likes(card_id):
     """Increase card's like count by 1."""
     card = validate_model_item(Card, card_id)
+
     if card.likes_count is None:
         card.likes_count = 0
     card.likes_count += 1
@@ -152,3 +98,57 @@ def delete_card(card_id):
     db.session.commit()
 
     return jsonify({"message": f"Card {card_id} has been successfully deleted!"}), 200
+
+
+"""
+boards demo URL: https://backend-inspiration-board.onrender.com
+
+ENDPOINTS --- Boards
+
+loading the website lists all boards:
+GET URL/boards
+
+creating a new board:
+OPTIONS URL/boards # maybe a CORS thing?
+POST URL/boards
+	Request body =
+    {
+		"owner": "Coolcud",
+        "title": "Testing"
+	}
+
+----------------------------------------------------------
+
+ENDPOINTS --- Boards and Cards
+
+clicking on a board loads all cards for that board:
+GET URL/boards/<board_id>/cards
+
+adding a new card:
+OPTIONS URL/boards/<board_id>/cards # maybe a CORS thing?
+POST URL/boards/<board_id>/cards
+	Request body =
+    {
+		"message": "Test 1"
+	}
+
+delete all boards and cards:
+OPTIONS URL/destroy_all # maybe a CORS thing?
+DELETE URL/destroy_all
+
+----------------------------------------------------------
+
+ENDPOINTS --- Cards
+
+deleting a card:
+OPTIONS URL/cards/<card_id> # maybe a CORS thing?
+DELETE URL/cards/<card_id>
+	returns:
+	{
+        "details": "Card 156 \"postman test\" successfully deleted"
+	}
+
+liking a card:
+OPTIONS URL/cards/<card_id>/like # maybe a CORS thing?
+PUT URL/cards/<card_id>/like
+"""
