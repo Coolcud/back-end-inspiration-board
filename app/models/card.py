@@ -1,13 +1,13 @@
 from app import db
 
 class Card(db.Model):
-    # Columns
     card_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     message = db.Column(db.String)
-    likes_count = db.Column(db.Integer)
-    board_id = db.Column(db.Integer, db.ForeignKey('board.board_id'))
+    likes_count = db.Column(db.Integer, default=0)
 
-    # Relationship
+    # TODO: Decide if this needs to be added? Would need to do flask db migrate, then upgrade again
+    # TODO: Would need to add foreign key in card.py, and relationship to board
+    board_id = db.Column(db.Integer, db.ForeignKey('board.board_id'))
     board = db.relationship("Board", back_populates="cards")
 
     def to_dict(self):
@@ -17,7 +17,7 @@ class Card(db.Model):
             "likes_count": self.likes_count
         }
 
-        # Associate board_id to card
+        # Set relationship between board and card
         if self.board_id:
             card_dict["board_id"] = self.board_id
 
