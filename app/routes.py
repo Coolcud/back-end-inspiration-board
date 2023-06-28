@@ -119,11 +119,12 @@ def get_all_cards_of_board(board_id):
 # --------------------------CARD ROUTES--------------------------
 
 
-@cards_bp.route("", methods=["POST"])
-def create_card():
+@boards_bp.route("/<board_id>/cards", methods=["POST"])
+def create_card(board_id):
+    board = validate_model_item(Board, board_id)
     request_body = request.get_json()
-
     new_card = Card.from_dict(request_body)
+    new_card.board = board
 
     db.session.add(new_card)
     db.session.commit()
