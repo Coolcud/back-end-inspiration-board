@@ -57,10 +57,9 @@ OPTIONS URL/cards/<card_id>/like # maybe a CORS thing?
 PUT URL/cards/<card_id>/like
 """
 
-# BLUEPRINTS
-# example_bp = Blueprint('example_bp', __name__)
 boards_bp = Blueprint("boards_bp", __name__, url_prefix="/boards")
 cards_bp = Blueprint("cards_bp", __name__, url_prefix="/cards")
+
 
 # --------------------------BOARD ROUTES--------------------------
 
@@ -94,8 +93,6 @@ def create_board():
     """Add new board to database."""
     request_body = request.get_json()
 
-    # TODO: 'Submit query' disabled if title and owner's name are empty (false)
-    # https://stackoverflow.com/questions/5614399/disabling-submit-button-until-all-fields-have-values
     new_board = Board.from_dict(request_body)
 
     db.session.add(new_board)
@@ -103,6 +100,8 @@ def create_board():
 
     return {"board": new_board.to_dict()}, 201
 
+
+# ---------------------BOARD & CARD ROUTES---------------------
 
 @boards_bp.route("/<board_id>/cards", methods=["GET"])
 def get_all_cards_of_board(board_id):
@@ -115,20 +114,22 @@ def get_all_cards_of_board(board_id):
     return jsonify(response), 200
 
 
-# TODO: Add POST route for adding card to board
-# --------------------------CARD ROUTES--------------------------
+@boards_bp.route("/<board_id>/cards", methods=["POST"])
+def create_card(board_id):
+    """Add new card to board and database."""
+    board = validate_model_item(Board, board_id)
 
-
-@cards_bp.route("", methods=["POST"])
-def create_card():
     request_body = request.get_json()
-
     new_card = Card.from_dict(request_body)
+    new_card.board = board
 
     db.session.add(new_card)
     db.session.commit()
 
     return {"card": new_card.to_dict()}, 201
+
+
+# --------------------------CARD ROUTES--------------------------
 
 @cards_bp.route("/<card_id>/like", methods=["PUT"])
 def increment_likes(card_id):
