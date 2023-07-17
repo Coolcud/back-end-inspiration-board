@@ -63,7 +63,7 @@ def send_post_to_slack(card):
     load_dotenv()
     slack_bot_token = os.environ.get('SLACK_BOT_TOKEN')
     slack_channel = 'byte-sized-inspiration'
-    text = f"A new card was created with this message:\'{card.message}\'"
+    text = f"A new card was created with this message: \"{card.message}\""
     headers = {'Authorization': f"Bearer {slack_bot_token}"}
     data = {
         'channel': slack_channel,
