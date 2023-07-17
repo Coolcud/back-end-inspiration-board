@@ -60,9 +60,9 @@ def delete_board(board_id):
 
 # ---------------------BOARD & CARD ROUTES---------------------
 def send_post_to_slack(card):
-
-    slack_bot_token = os.environ['SLACK_BOT_TOKEN']
-    slack_channel = 'byte-size-inspiration'
+    load_dotenv()
+    slack_bot_token = os.environ.get('SLACK_BOT_TOKEN')
+    slack_channel = 'byte-sized-inspiration'
     text = f"Card with the message: {card.message} was created"
     headers = {'Authorization': f"Bearer {slack_bot_token}"}
     data = {
