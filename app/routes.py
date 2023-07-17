@@ -2,7 +2,9 @@ from flask import Blueprint, request, jsonify, make_response, abort
 from app import db
 from app.models.board import Board
 from app.models.card import Card
-
+from dotenv import load_dotenv
+import os
+import requests
 
 boards_bp = Blueprint("boards_bp", __name__, url_prefix="/boards")
 cards_bp = Blueprint("cards_bp", __name__, url_prefix="/cards")
@@ -47,6 +49,19 @@ def create_board():
 
 
 # ---------------------BOARD & CARD ROUTES---------------------
+def send_post_to_slack(card):
+
+    slack_bot_token = os.environ['SLACK_BOT_TOKEN']
+    slack_channel = 'byte-size-inspiration'
+    text = f"Card with the message: {card.message} was created"
+    headers = {'Authorization': f"Bearer {slack_bot_token}"}
+    data = {
+        'channel': slack_channel,
+        'text': text
+    }
+    response = requests.post(
+        'https://slack.com/api/chat.postMessage', headers=headers, json=data)
+
 
 @boards_bp.route("/<board_id>/cards", methods=["GET"])
 def get_all_cards_of_board(board_id):
@@ -70,6 +85,8 @@ def create_card(board_id):
 
     db.session.add(new_card)
     db.session.commit()
+
+    send_post_to_slack(new_card)
 
     return {"card": new_card.to_dict()}, 201
 
