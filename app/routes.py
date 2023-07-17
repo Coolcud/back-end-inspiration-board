@@ -47,6 +47,16 @@ def create_board():
 
     return {"board": new_board.to_dict()}, 201
 
+@boards_bp.route("/<board_id>", methods=["DELETE"])
+def delete_board(board_id):
+    """Delete board via board_id."""
+    board = validate_model_item(Board, board_id)
+
+    db.session.delete(board)
+    db.session.commit()
+
+    return jsonify({"message": f"Board {board_id} has been successfully deleted!"}), 200
+
 
 # ---------------------BOARD & CARD ROUTES---------------------
 def send_post_to_slack(card):
